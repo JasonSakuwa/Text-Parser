@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Raw Parser</title>
+	<link rel="shortcut icon" type="image/x-icon" href="StockpileTile.png">
+</head>
+
+<body>
+
+	<p>Please enter text to be parsed.</p>
+	<label for="startString">Please enter Start string: </label>
+	<input type="text" id="startString">
+	<br>
+	<label for="endString">Please enter End string: </label>
+	<input type="text" id="endString">
+	<br>
+	<label for="preString">Please enter Pre string: </label>
+	<input list="inputList" id="preString">
+	<br>
+	<label for="postString">Please enter Post string: </label>
+	<input list="inputList" id="postString">
+	<br>
+	<datalist id="inputList">
+		<option value="<option>"></option>
+		<option value="</option>"></option>
+	</datalist>
+	<button onclick='copyToClipboard("parseArea")'>Copy to Clipboard</button>
+	<textarea id="parseArea"></textarea>
+	<button
+		onclick='debugger; rawString = document.getElementById("parseArea").value, document.getElementById("parseArea").value = 
+    rawParser2(rawString, getValue("startString"), getValue("endString"), getValue("preString"), getValue("postString"));'>Parse</button>
+
+
+	<p id="demo"></p>
+
+
+	<script>
+		function getValue(fieldId) {
+			value = document.getElementById(fieldId).value;
+			return value.toString();
+		}
+
+		function rawParser2(rawString, startString, endString, preString, postString) {
+			let outputArray = [];
+			let startStringPosition = 0;
+			while (rawString.indexOf(startString, startStringPosition) != -1) {
+				let sliceStartPosition = rawString.indexOf(startString, startStringPosition);
+				let sliceEndPosition = rawString.indexOf(endString, sliceStartPosition + startString.length + 1);
+				let middleString = rawString.slice(sliceStartPosition + startString.length, sliceEndPosition);
+				let outputString = preString.concat(middleString, postString);
+				outputArray.push(outputString);
+				startStringPosition = sliceEndPosition;
+			};
+			let finalOutput = outputArray.join("\n");
+			return finalOutput;
+		};
+
+
+		function copyToClipboard(elementId) {
+			document.getElementById(elementId).select();
+			document.execCommand("copy");
+			document.getSelection().removeAllRanges();
+		}
+
+	</script>
+
+</body>
+
+</html>
