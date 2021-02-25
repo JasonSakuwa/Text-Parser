@@ -27,9 +27,14 @@
 		<option value="</option>"></option>
 	</datalist>
 	<button onclick='copyToClipboard("parseArea")'>Copy to Clipboard</button>
-	<button
-		onclick='rawString = document.getElementById("parseArea").value, document.getElementById("parseArea").value = 
-	rawParser2(rawString, getValue("startString"), getValue("endString"), getValue("preString"), getValue("postString"), "removeIdenticalCheckbox");'>Parse</button>
+	<button onclick='rawString = document.getElementById("parseArea").value, 
+		document.getElementById("parseArea").value = 
+	rawParser2(rawString, 
+	getValue("startString"), 
+	getValue("endString"), 
+	getValue("preString"), 
+	getValue("postString"), 
+	"removeIdenticalCheckbox");'>Parse</button>
 	<label for="removeIdenticalCheckbox">Remove Identical?</label>
 	<input type="checkbox" id="removeIdenticalCheckbox">
 	<br>
@@ -40,21 +45,24 @@
 
 
 	<script>
+		// gets values from user input
 		function getValue(fieldId) {
-			value = document.getElementById(fieldId).value;
-			return value.toString();
+			return document.getElementById(fieldId).value.toString();
 		}
 
-		function rawParser2(rawString, startString, endString, preString, postString, removeIdenticalCheckboxId) {
+
+		function rawParser2(rawRawString, startString, endString, preString, postString, removeIdenticalCheckboxId) {
+			rawString = rawRawString.replace(/\s+/g, '');
 			let outputArray = [];
 			let startStringPosition = 0;
+			const startStringLength = startString.length;
 			debugger;
 			if (document.getElementById(removeIdenticalCheckboxId).checked) {
 				var identical = false;
 				while (rawString.indexOf(startString, startStringPosition) != -1) {
 					let sliceStartPosition = rawString.indexOf(startString, startStringPosition);
-					let sliceEndPosition = rawString.indexOf(endString, sliceStartPosition + startString.length + 1);
-					let middleString = rawString.slice(sliceStartPosition + startString.length, sliceEndPosition);
+					let sliceEndPosition = rawString.indexOf(endString, sliceStartPosition + startStringLength + 1);
+					let middleString = rawString.slice(sliceStartPosition + startStringLength, sliceEndPosition);
 					let outputString = preString.concat(middleString, postString);
 					for (oS of outputArray) {
 						if (oS === outputString) {
@@ -71,15 +79,15 @@
 			} else {
 				while (rawString.indexOf(startString, startStringPosition) != -1) {
 					let sliceStartPosition = rawString.indexOf(startString, startStringPosition);
-					let sliceEndPosition = rawString.indexOf(endString, sliceStartPosition + startString.length + 1);
-					let middleString = rawString.slice(sliceStartPosition + startString.length, sliceEndPosition);
+					let sliceEndPosition = rawString.indexOf(endString, sliceStartPosition + startStringLength + 1);
+					let middleString = rawString.slice(sliceStartPosition + startStringLength, sliceEndPosition);
 					let outputString = preString.concat(middleString, postString);
 					outputArray.push(outputString);
 					startStringPosition = sliceEndPosition;
 				}
 			}
-			return outputArray.join("\n");;
-		};
+			return outputArray.join("\n");
+		}
 
 		function copyToClipboard(elementId) {
 			document.getElementById(elementId).select();
